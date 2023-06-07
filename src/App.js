@@ -1,5 +1,5 @@
 import "./App.css";
-import Anecdotes from "./Components/Anecdotes";
+// import Anecdotes from "./Components/Anecdotes";
 import Phoenbook from "./Components/Phoenbook";
 
 function App() {

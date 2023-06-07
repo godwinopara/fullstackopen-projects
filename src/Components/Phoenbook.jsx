@@ -10,11 +10,9 @@ const Phoenbook = () => {
 	useEffect(() => {
 		const promise = service.getAll();
 		promise.then((res) => {
-			setPersons(res.data);
+			setPersons(res);
 		});
 	}, []);
-
-	// const addPerson = () => {};
 
 	function handleSubmit(e) {
 		e.preventDefault();
@@ -25,17 +23,19 @@ const Phoenbook = () => {
 
 		// Add Contact to phonebook
 		if (!userFound) {
+			// Send data to bankend
 			const addUser = service.create({ name: newContact.name, number: newContact.number });
-			addUser.then((res) => {
-				console.log(res);
-				setPersons([...persons, res.data]);
-			});
+			addUser.then((res) => setPersons(persons.concat(res)));
 			setNewUser({ name: "", number: "" });
 			return;
 		}
 		// Show Alert
-		alert(`${newContact} is already added to phonebook`);
-		setNewUser({ name: "", number: "" });
+		if (window.confirm(`${newContact.name} is already added to phonebook, replace the old number with new one`)) {
+			const updateUserDetails = service.update(userFound.id, newContact);
+			updateUserDetails.then((res) => {
+				setPersons(persons.map((person) => (person.id !== res.id ? person : res)));
+			});
+		}
 	}
 
 	const handleChangeUser = (e) => {
@@ -47,6 +47,14 @@ const Phoenbook = () => {
 		const userInput = e.target.value;
 		const newFilteredList = persons.filter((name) => name.name.includes(userInput));
 		setFilteredList(newFilteredList);
+	};
+
+	const handleClickDelete = (id) => {
+		const user = persons.find((person) => person.id === id);
+		if (window.confirm(`Delete ${user.name}`)) {
+			service.deleteUser(id);
+			setPersons(persons.filter((person) => person.id !== id));
+		}
 	};
 
 	return (
@@ -68,12 +76,12 @@ const Phoenbook = () => {
 				{filteredList.length > 0
 					? filteredList.map((person) => (
 							<li key={person.name.id}>
-								{person.name} {person.number}
+								{person.name} {person.number} <button onClick={() => handleClickDelete(person.id)}>delete</button>
 							</li>
 					  ))
 					: persons.map((person) => (
 							<li key={person.id}>
-								{person.name} {person.number}
+								{person.name} {person.number} <button onClick={() => handleClickDelete(person.id)}>delete</button>
 							</li>
 					  ))}
 			</div>
