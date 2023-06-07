@@ -7,7 +7,16 @@ const Phoenbook = () => {
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		const newContact = newUser;
-		setNames([...names, { name: newContact }]);
+
+		// check if contact exit on phonebook
+		const userFound = names.find((name) => name.name.toLowerCase() === newContact.toLowerCase());
+
+		if (!userFound) {
+			setNames([...names, { name: newContact }]);
+			setNewUser("");
+			return;
+		}
+		alert(`${newContact} is already added to phonebook`);
 		setNewUser("");
 	};
 
