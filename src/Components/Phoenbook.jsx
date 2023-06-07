@@ -1,8 +1,14 @@
 import { useState } from "react";
 
 const Phoenbook = () => {
-	const [names, setNames] = useState([{ name: "Arto Hellas" }]);
+	const [names, setNames] = useState([
+		{ name: "Arto Hellas", number: "040-123456", id: 1 },
+		{ name: "Ada Lovelace", number: "39-44-5323523", id: 2 },
+		{ name: "Dan Abramov", number: "12-43-234345", id: 3 },
+		{ name: "Mary Poppendieck", number: "39-23-6423122", id: 4 },
+	]);
 	const [newUser, setNewUser] = useState({ name: "", number: "" });
+	const [filteredList, setFilteredList] = useState([]);
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -27,9 +33,16 @@ const Phoenbook = () => {
 		setNewUser((prevUser) => ({ ...prevUser, [name]: value }));
 	};
 
+	const handleOnchangeFilter = (e) => {
+		const userInput = e.target.value;
+		const newFilteredList = names.filter((name) => name.name.includes(userInput));
+		setFilteredList(newFilteredList);
+	};
+
 	return (
 		<div>
 			<h2>Phonebook</h2>
+			filter shown with: <input onChange={handleOnchangeFilter} type="search" name="" id="" />
 			<form>
 				<div>
 					name: <input value={newUser.name} onChange={handleChangeUser} type="text" name="name" id="name" />
@@ -42,11 +55,17 @@ const Phoenbook = () => {
 			</form>
 			<h2>Numbers</h2>
 			<div>
-				{names.map((name, i) => (
-					<li key={i}>
-						{name.name} {name.number}
-					</li>
-				))}
+				{filteredList.length > 0
+					? filteredList.map((name, i) => (
+							<li key={i}>
+								{name.name} {name.number}
+							</li>
+					  ))
+					: names.map((name, i) => (
+							<li key={i}>
+								{name.name} {name.number}
+							</li>
+					  ))}
 			</div>
 		</div>
 	);
