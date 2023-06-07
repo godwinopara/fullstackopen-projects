@@ -6,6 +6,7 @@ const Phoenbook = () => {
 	const [persons, setPersons] = useState([]);
 	const [newUser, setNewUser] = useState({ name: "", number: "" });
 	const [filteredList, setFilteredList] = useState([]);
+	const [message, setMessage] = useState(null);
 
 	useEffect(() => {
 		const promise = service.getAll();
@@ -26,7 +27,11 @@ const Phoenbook = () => {
 			// Send data to bankend
 			const addUser = service.create({ name: newContact.name, number: newContact.number });
 			addUser.then((res) => setPersons(persons.concat(res)));
+			setMessage(`Added ${newContact.name}`);
 			setNewUser({ name: "", number: "" });
+			setTimeout(() => {
+				setMessage(null);
+			}, 5000);
 			return;
 		}
 		// Show Alert
@@ -54,12 +59,17 @@ const Phoenbook = () => {
 		if (window.confirm(`Delete ${user.name}`)) {
 			service.deleteUser(id);
 			setPersons(persons.filter((person) => person.id !== id));
+			setMessage(`Removed ${user.name}`);
+			setTimeout(() => {
+				setMessage(null);
+			}, 5000);
 		}
 	};
 
 	return (
 		<div>
 			<h2>Phonebook</h2>
+			<div>{message}</div>
 			filter shown with: <input onChange={handleOnchangeFilter} type="search" name="" id="" />
 			<form>
 				<div>
