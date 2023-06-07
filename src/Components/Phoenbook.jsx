@@ -1,32 +1,42 @@
-import { useState } from "react";
+// import axios from "axios";
+import { useEffect, useState } from "react";
+import * as service from "../services/service";
 
 const Phoenbook = () => {
-	const [names, setNames] = useState([
-		{ name: "Arto Hellas", number: "040-123456", id: 1 },
-		{ name: "Ada Lovelace", number: "39-44-5323523", id: 2 },
-		{ name: "Dan Abramov", number: "12-43-234345", id: 3 },
-		{ name: "Mary Poppendieck", number: "39-23-6423122", id: 4 },
-	]);
+	const [persons, setPersons] = useState([]);
 	const [newUser, setNewUser] = useState({ name: "", number: "" });
 	const [filteredList, setFilteredList] = useState([]);
 
-	const handleSubmit = (e) => {
+	useEffect(() => {
+		const promise = service.getAll();
+		promise.then((res) => {
+			setPersons(res.data);
+		});
+	}, []);
+
+	// const addPerson = () => {};
+
+	function handleSubmit(e) {
 		e.preventDefault();
 		const newContact = { ...newUser };
 
 		// check if contact exit on phonebook
-		const userFound = names.find((name) => name.name.toLowerCase() === newContact.name.toLowerCase());
+		const userFound = persons.find((name) => name.name.toLowerCase() === newContact.name.toLowerCase());
 
 		// Add Contact to phonebook
 		if (!userFound) {
-			setNames([...names, { name: newContact.name, number: newContact.number }]);
+			const addUser = service.create({ name: newContact.name, number: newContact.number });
+			addUser.then((res) => {
+				console.log(res);
+				setPersons([...persons, res.data]);
+			});
 			setNewUser({ name: "", number: "" });
 			return;
 		}
 		// Show Alert
 		alert(`${newContact} is already added to phonebook`);
 		setNewUser({ name: "", number: "" });
-	};
+	}
 
 	const handleChangeUser = (e) => {
 		const { name, value } = e.target;
@@ -35,7 +45,7 @@ const Phoenbook = () => {
 
 	const handleOnchangeFilter = (e) => {
 		const userInput = e.target.value;
-		const newFilteredList = names.filter((name) => name.name.includes(userInput));
+		const newFilteredList = persons.filter((name) => name.name.includes(userInput));
 		setFilteredList(newFilteredList);
 	};
 
@@ -56,14 +66,14 @@ const Phoenbook = () => {
 			<h2>Numbers</h2>
 			<div>
 				{filteredList.length > 0
-					? filteredList.map((name, i) => (
-							<li key={i}>
-								{name.name} {name.number}
+					? filteredList.map((person) => (
+							<li key={person.name.id}>
+								{person.name} {person.number}
 							</li>
 					  ))
-					: names.map((name, i) => (
-							<li key={i}>
-								{name.name} {name.number}
+					: persons.map((person) => (
+							<li key={person.id}>
+								{person.name} {person.number}
 							</li>
 					  ))}
 			</div>
