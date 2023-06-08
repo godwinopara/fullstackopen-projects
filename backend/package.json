@@ -1,0 +1,12 @@
+{
+	"name": "full-stack-open-backend",
+	"version": "1.0.0",
+	"description": "backend codes for all fullstack projects on full stack open",
+	"main": "index.js",
+	"scripts": {
+		"start": "node index.js",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "",
+	"license": "MIT"
+}
