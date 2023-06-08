@@ -8,7 +8,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(morgan("common"));
-// app.use(express.static("build"));
+app.use(express.static(path.join(__dirname, "build")));
 
 const persons = [
 	{
@@ -33,11 +33,11 @@ const persons = [
 	},
 ];
 
-app.get("/", function (req, res) {
-	res.sendFile(path.join(__dirname, "build", "index.html"));
+app.get("/api", function (req, res) {
+	res.send("welcome");
 });
 
-app.get("/info", (req, res) => {
+app.get("/api/info", (req, res) => {
 	const time = new Date();
 	res.send(`<div>Phonebook has info for ${persons.length} people <br/> ${time} </div>`);
 });
