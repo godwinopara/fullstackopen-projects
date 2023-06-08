@@ -7,7 +7,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(morgan("common"));
-app.use(express.static("build"));
+app.use("/", express.static("build"));
 
 const persons = [
 	{
@@ -31,10 +31,6 @@ const persons = [
 		id: 4,
 	},
 ];
-
-app.get("/", (req, res) => {
-	res.send("hello world");
-});
 
 app.get("/info", (req, res) => {
 	const time = new Date();
