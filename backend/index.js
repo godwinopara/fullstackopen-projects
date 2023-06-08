@@ -8,7 +8,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(morgan("common"));
-app.use("/", express.static("build"));
+// app.use(express.static("build"));
 
 const persons = [
 	{
@@ -34,7 +34,7 @@ const persons = [
 ];
 
 app.get("/", function (req, res) {
-	res.sendFile(path.join(__dirname, "build", "index.html"));
+	res.send(path.join(__dirname, "build", "index.html"));
 });
 
 app.get("/info", (req, res) => {
