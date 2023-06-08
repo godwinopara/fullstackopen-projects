@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import * as service from "../services/service";
+// import * as service from "../services/service";
 import axios from "axios";
 
 const DisplayCountry = ({ country }) => {

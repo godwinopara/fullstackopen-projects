@@ -1,8 +1,12 @@
 const express = require("express");
+const morgan = require("morgan");
+const cors = require("cors");
 
 const app = express();
 
 app.use(express.json());
+app.use(cors());
+app.use(morgan("common"));
 
 const persons = [
 	{
@@ -19,6 +23,11 @@ const persons = [
 		name: "Dan Abramov",
 		number: "12-43-234345",
 		id: 3,
+	},
+	{
+		name: "Dan Mikky",
+		number: "12-43-234345",
+		id: 4,
 	},
 ];
 
@@ -78,5 +87,5 @@ app.post("/api/persons", (req, res) => {
 	res.json(newContact);
 });
 
-const port = 5000;
-app.listen(port, () => console.log(`running on port ${port}`));
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`running on port ${PORT}`));
