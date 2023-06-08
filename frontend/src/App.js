@@ -1,7 +1,7 @@
 import "./App.css";
 // import Countries from "./Components/Countries";
 // import Anecdotes from "./Components/Anecdotes";
-import Phoenbook from "./Components/Phoenbook";
+import Phoenbook from "../frontend/src/Components/Phoenbook";
 
 function App() {
 	return (
