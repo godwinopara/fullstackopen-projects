@@ -34,7 +34,7 @@ const persons = [
 ];
 
 app.get("/", function (req, res) {
-	res.send(path.join(__dirname, "build", "index.html"));
+	res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
 app.get("/info", (req, res) => {
