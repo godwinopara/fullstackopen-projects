@@ -38,5 +38,16 @@ app.get("/api/persons/:id", (req, res) => {
 	}
 });
 
+app.delete("/api/persons/:id", (req, res) => {
+	const id = Number(req.params.id);
+	const newPersons = persons.filter((person) => person.id !== id);
+	const person = persons.find((person) => person.id === id);
+	if (person) {
+		res.json(newPersons).status(204).end();
+	} else {
+		res.status(404).end();
+	}
+});
+
 const port = 5000;
 app.listen(port, () => console.log(`running on port ${port}`));
