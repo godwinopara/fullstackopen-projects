@@ -32,6 +32,10 @@ const persons = [
 	},
 ];
 
+app.get("/", function (req, res) {
+	res.sendFile(path.join(__dirname, "build", "index.html"));
+});
+
 app.get("/info", (req, res) => {
 	const time = new Date();
 	res.send(`<div>Phonebook has info for ${persons.length} people <br/> ${time} </div>`);
