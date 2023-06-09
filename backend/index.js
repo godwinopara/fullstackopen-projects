@@ -8,7 +8,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(morgan("common"));
-app.use(express.static(path.join(__dirname, "build")));
+app.use(express.static(path.resolve(__dirname, "../frontend/build")));
 
 const persons = [
 	{
@@ -33,9 +33,9 @@ const persons = [
 	},
 ];
 
-// gets the static files from the build folder
-app.get("*", (req, res) => {
-	res.sendFile(path.join(__dirname, "build", "index.html"));
+// All remaining requests return the React app, so it can handle routing.
+app.get("*", function (request, response) {
+	response.sendFile(path.resolve(__dirname, "../frontend/build", "index.html"));
 });
 
 app.get("/api/info", (req, res) => {
