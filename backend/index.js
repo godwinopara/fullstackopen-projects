@@ -2,12 +2,41 @@ const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
 const path = require("path");
+const mongoose = require("mongoose");
 
 const app = express();
-
 app.use(express.json());
 app.use(cors());
 app.use(morgan("common"));
+
+if (process.argv.length < 3) {
+	console.log("give password as argument");
+	process.exit(1);
+}
+
+const password = process.argv[2];
+
+const url = `mongodb+srv://godwinopara62:${password}@cluster0.ybrj36b.mongodb.net/phonebookApp?retryWrites=true&w=majority`;
+
+mongoose.set("strictQuery", false);
+mongoose.connect(url);
+
+const phoneBookSchema = mongoose.Schema({ name: String, number: String });
+const PhoneBook = mongoose.model("PhoneBook", phoneBookSchema);
+
+// PhoneBook.find({}).then((result) => {
+// 	result.forEach((contact) => {
+// 		console.log(contact);
+// 	});
+// 	mongoose.connection.close();
+// });
+phoneBookSchema.set("toJSON", {
+	transform: (document, returnedObject) => {
+		returnedObject.id = returnedObject._id.toString();
+		delete returnedObject._id;
+		delete returnedObject.__v;
+	},
+});
 
 const persons = [
 	{
@@ -43,7 +72,10 @@ app.get("/api/info", (req, res) => {
 });
 
 app.get("/api/persons", (req, res) => {
-	res.json(persons);
+	PhoneBook.find({}).then((result) => {
+		console.log(result);
+		res.json(result);
+	});
 });
 
 app.get("/api/persons/:id", (req, res) => {
