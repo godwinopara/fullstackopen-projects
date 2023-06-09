@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
+const dotenv = require("dotenv");
 
-const url = `mongodb+srv://godwinopara62:godon2009@cluster0.ybrj36b.mongodb.net/phonebookApp?retryWrites=true&w=majority`;
+dotenv.config();
+
+const url = process.env.MONGODB_URI;
 
 mongoose.set("strictQuery", false);
 mongoose

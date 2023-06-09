@@ -2,8 +2,9 @@ const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
 const path = require("path");
+const dotenv = require("dotenv").config();
 
-const DB = require("./models/phonebook");
+const PhoneBook = require("./models/phonebook");
 
 const app = express();
 app.use(express.json());
@@ -44,53 +45,44 @@ app.get("/api/info", (req, res) => {
 });
 
 app.get("/api/persons", (req, res) => {
-	DB.find({}).then((result) => {
-		console.log(result);
+	PhoneBook.find({}).then((result) => {
 		res.json(result);
 	});
 });
 
 app.get("/api/persons/:id", (req, res) => {
-	const id = Number(req.params.id);
-	const person = persons.find((person) => person.id === id);
-	if (person) {
-		res.json(person);
-	} else {
-		res.json("Not Found").status(404).end();
-	}
+	const id = req.params.id;
+	PhoneBook.findById(id).then((result) => {
+		res.json(result);
+	});
 });
 
 app.delete("/api/persons/:id", (req, res) => {
-	const id = Number(req.params.id);
-	const newPersons = persons.filter((person) => person.id !== id);
-	const person = persons.find((person) => person.id === id);
-
-	if (person) {
-		res.json(newPersons).status(204).end();
-	} else {
-		res.status(404).end();
-	}
+	const id = req.params.id;
+	PhoneBook.findByIdAndDelete(id).then((deletedPerson) => {
+		if (!deletedPerson) {
+			res.status(404).end();
+		} else {
+			res.status(200).json(deletedPerson);
+		}
+	});
 });
 
 app.post("/api/persons", (req, res) => {
-	const newContact = req.body;
-	const existingUser = persons.find((person) => person.name.toLowerCase() === newContact.name.toLowerCase());
+	const { name, number } = req.body;
 
-	if (!newContact.name) {
+	if (!name) {
 		res.status(400).json({ error: "Name is missing" });
 	}
-	if (!newContact.number) {
+	if (!number) {
 		res.status(400).json({ error: "Number is missing" });
 	}
-	if (existingUser) {
-		res.status(400).json({ error: "User already exists" });
-	}
 
-	console.log(newContact.name);
-
-	console.log(req.headers);
-	console.log(newContact);
-	res.json(newContact);
+	const newPerson = new PhoneBook({ name: name, number: number });
+	newPerson.save().then((savedPerson) => {
+		console.log("saved");
+		res.status(201).json(savedPerson);
+	});
 });
 
 const PORT = process.env.PORT || 5000;
